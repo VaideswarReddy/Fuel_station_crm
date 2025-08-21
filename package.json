@@ -1,0 +1,63 @@
+{
+  "name": "slnfs-crm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env NODE_ENV=development electron .\"",
+    "build": "vite build",
+    "electron:build": "cross-env NODE_ENV=production electron-builder -mwl",
+    "start": "cross-env NODE_ENV=production electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^31.3.0",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.7",
+    "wait-on": "^8.0.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.5.0",
+    "@mui/material": "^6.1.6",
+    "@mui/x-charts": "^8.10.1",
+    "@mui/x-date-pickers": "^8.10.2",
+    "better-sqlite3": "^11.6.0",
+    "dayjs": "^1.11.13",
+    "pdfkit": "^0.15.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0"
+  },
+  "build": {
+    "appId": "com.slnfs.crm",
+    "productName": "SLNFS CRM",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "node_modules/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "db",
+        "to": "db",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
+  }
+}
