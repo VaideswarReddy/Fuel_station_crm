@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import Database from 'better-sqlite3'
-import { createWriteStream } from 'fs'
+import { createWriteStream, mkdirSync, accessSync, constants as fsConstants, existsSync, copyFileSync } from 'fs'
 import { promises as fs } from 'fs'
 import PDFDocument from 'pdfkit'
 
@@ -11,9 +11,34 @@ const __dirname = path.dirname(__filename)
 
 let mainWindow = null
 
-// App DB path within userData for persistence
-const userDataPath = app.getPath('userData')
-const dbPath = path.join(userDataPath, 'slnfs_crm.db')
+// Resolve database location:
+// 1) Prefer a writable 'data' directory next to the installed app (install location)
+// 2) Fallback to userData if install location is not writable
+let resolvedDataDir
+try {
+    const exeDir = path.dirname(app.getPath('exe'))
+    const preferred = path.join(exeDir, 'data')
+    mkdirSync(preferred, { recursive: true })
+    accessSync(preferred, fsConstants.W_OK)
+    resolvedDataDir = preferred
+} catch (e) {
+    // Fallback to per-user data directory
+    resolvedDataDir = app.getPath('userData')
+    try { mkdirSync(resolvedDataDir, { recursive: true }) } catch {}
+}
+
+const dbPath = path.join(resolvedDataDir, 'slnss_crm.db')
+
+// If DB does not exist, seed from bundled resource if available
+try {
+    if (!existsSync(dbPath)) {
+        const bundledSeed = path.join(process.resourcesPath || __dirname, 'db', 'slnss_crm.db')
+        if (existsSync(bundledSeed)) {
+            try { copyFileSync(bundledSeed, dbPath) } catch {}
+        }
+    }
+} catch {}
+
 const db = new Database(dbPath)
 
 function migrate() {
@@ -241,14 +266,15 @@ function migrate() {
 	if (nozzleCount === 0) {
 		const insert = db.prepare('INSERT INTO nozzles (id, label, fuel_type, price_per_litre) VALUES (@id, @label, @fuel_type, @price_per_litre)')
 		const defaults = [
-			{ id: 1, label: 'Nozzle 1', fuel_type: 'petrol', price_per_litre: 0 },
-			{ id: 2, label: 'Nozzle 2', fuel_type: 'petrol', price_per_litre: 0 },
-			{ id: 3, label: 'Nozzle 3', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 1, label: 'Pump_1_N1', fuel_type: 'diesel', price_per_litre: 0 },
+			{ id: 2, label: 'Pump_1_N2', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 3, label: 'Nozzle 3', fuel_type: 'diesel', price_per_litre: 0 },
 			{ id: 4, label: 'Nozzle 4', fuel_type: 'diesel', price_per_litre: 0 },
-			{ id: 5, label: 'Nozzle 5', fuel_type: 'diesel', price_per_litre: 0 },
-			{ id: 6, label: 'Nozzle 6', fuel_type: 'diesel', price_per_litre: 0 },
-			{ id: 7, label: 'Nozzle 7', fuel_type: 'diesel', price_per_litre: 0 },
-			{ id: 8, label: 'Others', fuel_type: 'others', price_per_litre: 0 }
+			{ id: 5, label: 'Nozzle 5', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 6, label: 'Nozzle 6', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 7, label: 'Nozzle 7', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 8, label: 'Nozzle 8', fuel_type: 'petrol', price_per_litre: 0 },
+			{ id: 9, label: 'Others', fuel_type: 'others', price_per_litre: 0 }
 		]
 		const tx = db.transaction((rows) => rows.forEach(r => insert.run(r)))
 		tx(defaults)
@@ -268,7 +294,7 @@ function createWindow() {
 	mainWindow = new BrowserWindow({
 		width: 1200,
 		height: 800,
-		title: 'SLNFS CRM',
+		title: 'SLNSS CRM',
 		webPreferences: {
 			contextIsolation: true,
 			nodeIntegration: false,
@@ -1558,9 +1584,9 @@ ipcMain.handle('dashboard:getMetrics', (_e, payload) => {
 // Data Management: backup database
 ipcMain.handle('dataManagementBackup', async () => {
 	try {
-		const backupDir = path.join(app.getPath('downloads'), 'SLNFS_CRM_Backups')
+		const backupDir = path.join(app.getPath('downloads'), 'SLNSS_CRM_Backups')
 		const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-		const backupFileName = `slnfs_crm_backup_${timestamp}.db`
+		const backupFileName = `slnss_crm_backup_${timestamp}.db`
 		const backupPath = path.join(backupDir, backupFileName)
 		
 		// Create backup directory if it doesn't exist

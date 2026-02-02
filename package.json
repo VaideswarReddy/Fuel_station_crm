@@ -1,5 +1,5 @@
 {
-  "name": "slnfs-crm",
+  "name": "slnss-crm",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env NODE_ENV=development electron .\"",
     "build": "vite build",
     "electron:build": "cross-env NODE_ENV=production electron-builder -mwl",
+    "electron:build:win": "cross-env NODE_ENV=production electron-builder -w",
     "start": "cross-env NODE_ENV=production electron .",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -39,8 +40,11 @@
     "react-router-dom": "^6.27.0"
   },
   "build": {
-    "appId": "com.slnfs.crm",
-    "productName": "SLNFS CRM",
+    "appId": "com.slnss.crm",
+    "productName": "SLNSS CRM",
+    "directories": {
+      "output": "dist-electron"
+    },
     "files": [
       "dist/**",
       "electron/**",
@@ -56,6 +60,26 @@
         ]
       }
     ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SLNSS CRM",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true,
+      "menuCategory": "SLNSS CRM"
+    },
     "mac": {
       "category": "public.app-category.productivity"
     }

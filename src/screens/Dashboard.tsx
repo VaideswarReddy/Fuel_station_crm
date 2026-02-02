@@ -72,7 +72,7 @@ export default function Dashboard() {
 	return (
 		<Box>
 			<Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} justifyContent="space-between" mb={2} gap={2}>
-				<Typography variant="h5">SLNFS CRM Dashboard</Typography>
+				<Typography variant="h5">SLNSS CRM Dashboard</Typography>
 				<TextField type="month" label="Month" InputLabelProps={{ shrink: true }} size="small" value={month} onChange={e => setMonth(e.target.value)} />
 			</Stack>
 

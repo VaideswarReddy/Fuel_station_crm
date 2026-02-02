@@ -58,7 +58,7 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
         <CardContent sx={{ p: 3 }}>
           <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography variant="h5" component="h1" sx={{ mb: 1, color: '#424242' }}>
-              SLNFS CRM
+              SLNSS CRM
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Sign in to continue

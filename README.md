@@ -1,4 +1,4 @@
-# SLNFS CRM - Fuel Station Management System
+# SLNSS CRM - Fuel Station Management System
 
 A comprehensive Customer Relationship Management (CRM) application designed specifically for fuel stations. This Electron-based desktop application provides complete fuel sales tracking, customer management, expense tracking, and detailed reporting capabilities.
 
@@ -149,7 +149,7 @@ A comprehensive Customer Relationship Management (CRM) application designed spec
 - **Permissions**: Ensure you have write permissions in the app directory
 
 #### Database Errors
-- **Reset Database**: Delete the `slnfs_crm.db` file and restart the app
+- **Reset Database**: Delete the `slnss_crm.db` file and restart the app
 - **Migration Issues**: The app automatically handles database migrations
 
 #### Performance Issues
@@ -265,7 +265,7 @@ npm start           # Start production app
 
 ## 📝 License
 
-This application is proprietary software developed for SLNFS fuel station management.
+This application is proprietary software developed for SLNSS fuel station management.
 
 ## 🔄 Updates
 

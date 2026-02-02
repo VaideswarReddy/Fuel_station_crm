@@ -16,7 +16,7 @@ export default function App() {
 			<AppBar position="static" color="primary" enableColorOnDark>
 				<Toolbar>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						SLNFS CRM
+						SLNSS CRM
 					</Typography>
 					<Stack direction="row" gap={1}>
 						<Button color="inherit" component={Link} to="/dashboard" variant={location.pathname === '/' || location.pathname.startsWith('/dashboard') ? 'outlined' : 'text'}>Dashboard</Button>
